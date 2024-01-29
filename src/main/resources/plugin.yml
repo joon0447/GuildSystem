@@ -1,0 +1,9 @@
+name: GuildSystem
+version: '${project.version}'
+softdepend: [Vault]
+main: org.joon1.guildsystem.GuildSystem
+api-version: '1.20'
+commands: 
+  bal:
+    description: 돈 확인
+  test:
