@@ -7,3 +7,5 @@ commands:
   bal:
     description: 돈 확인
   test:
+  길드:
+    description: 길드 메뉴 열기

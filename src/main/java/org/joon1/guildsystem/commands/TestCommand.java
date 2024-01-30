@@ -15,7 +15,7 @@ public class TestCommand implements CommandExecutor {
             Economy eco = VaultHook.getEconomy();
             Player player = (Player) commandSender;
             eco.depositPlayer(player, 10.0);
-            player.sendMessage("10원 지급");
+            player.sendMessage("10원 증가");
         }
         return false;
     }
