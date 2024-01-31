@@ -5,10 +5,17 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.joon1.guildsystem.GuildSystem;
 import org.joon1.guildsystem.hook.VaultHook;
 
-public class TestCommand implements CommandExecutor {
+import java.util.UUID;
 
+public class TestCommand implements CommandExecutor {
+    private GuildSystem guildSystem;
+
+    public TestCommand(GuildSystem guildSystem){
+        this.guildSystem = guildSystem;
+    }
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if(commandSender instanceof Player){
@@ -16,6 +23,11 @@ public class TestCommand implements CommandExecutor {
             Player player = (Player) commandSender;
             eco.depositPlayer(player, 10.0);
             player.sendMessage("10원 증가");
+            player.sendMessage(Integer.toString(guildSystem.playerGuildMap.size()));
+            for(UUID u : guildSystem.playerGuildMap.keySet()){
+                player.sendMessage(u.toString());
+                player.sendMessage(guildSystem.playerGuildMap.get(u));
+            }
         }
         return false;
     }
