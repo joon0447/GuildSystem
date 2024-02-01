@@ -61,6 +61,7 @@ public class GuildMenuCommand implements CommandExecutor {
                 String GuildName = yc.getString("Guild Name");
                 String Leader = yc.getString("Guild Leader (Name)");
                 String GuildLevel = yc.getString("Guild Level");
+                Boolean find = yc.getBoolean("FindGuild");
 
                 ItemStack GuildInfo = new ItemStack(Material.BOOK);
                 ItemMeta GuildInfoMeta = GuildInfo.getItemMeta();
@@ -70,7 +71,8 @@ public class GuildMenuCommand implements CommandExecutor {
                 guildMenu.setItem(10, GuildInfo);
                 guildMenu.setItem(12, guildSystem.GuildUserManager);
                 guildMenu.setItem(14, guildSystem.GuildSkill);
-                guildMenu.setItem(16, guildSystem.GuildSetting);
+                if(find) guildMenu.setItem(16, guildSystem.GuildOpenTrue);
+                else guildMenu.setItem(16, guildSystem.GuildOpenFalse);
                 player.openInventory(guildMenu);
             }else if(check){ //플레이어가 길드원일때
                 Inventory guildMenu = Bukkit.createInventory(player, 27, ChatColor.GREEN.toString() + ChatColor.BOLD + "길드 메뉴");

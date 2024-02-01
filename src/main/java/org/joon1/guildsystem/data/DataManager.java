@@ -8,6 +8,9 @@ import org.joon1.guildsystem.GuildSystem;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class DataManager {
@@ -64,6 +67,11 @@ public class DataManager {
         GuildFileYml.set("Guild Leader (Name)", Bukkit.getOfflinePlayer(uuid).getName());
         GuildFileYml.set("Guild Leader (UUID)", uuid.toString());
         GuildFileYml.set("Guild Level", 1);
+
+        Map<String, String> map = new HashMap<>();
+        map.put(uuid.toString(), Bukkit.getPlayer(uuid).getName());
+        GuildFileYml.set("FindGuild", true);
+        GuildFileYml.set("Players", map);
         try{
             GuildFileYml.save(GuildFile);
         }catch (IOException e){

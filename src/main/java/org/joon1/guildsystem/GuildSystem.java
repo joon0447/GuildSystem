@@ -8,7 +8,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.joon1.guildsystem.Listener.CheckGuild;
 import org.joon1.guildsystem.Listener.GuildServerJoinQuitListener;
 import org.joon1.guildsystem.Listener.GuildMenuListener;
 import org.joon1.guildsystem.Listener.GuildCreateListener;
@@ -43,7 +42,6 @@ public final class GuildSystem extends JavaPlugin {
         getCommand("test").setExecutor(new TestCommand(this));
         getCommand("길드").setExecutor(new GuildMenuCommand(this));
 
-        Bukkit.getPluginManager().registerEvents(new CheckGuild(), this);
         Bukkit.getPluginManager().registerEvents(new GuildMenuListener(this), this);
         Bukkit.getPluginManager().registerEvents(new GuildCreateListener(this, this.dataManager), this);
         Bukkit.getPluginManager().registerEvents(new GuildServerJoinQuitListener(this), this);
@@ -60,8 +58,13 @@ public final class GuildSystem extends JavaPlugin {
     public ItemStack GuildTicketPrice; // 길드 메뉴 출력 길드 생성 티켓 (비용 포함 출력)
     public ItemStack FindGuild; // 길드 메뉴 - 길드 찾기 아이콘
     public ItemStack GuildUserManager; // 길드 메뉴 - 길드 인원 관리
+    public ItemStack GuildUserList; // 길드 메뉴 - 길드 인원 관리 - 길드 인원 정보
+    public ItemStack GuildUserKick; // 길드 메뉴 - 길드 인원 관리 - 길드 인원 추방
+    public ItemStack GuildUserInvite; // 길드 메뉴 - 길드 인원 관리 - 길드 인원 신청함
     public ItemStack GuildSkill; // 길드 메뉴 - 길드 스킬
-    public ItemStack GuildSetting; // 길드 메뉴 - 길드 설정
+    public ItemStack GuildOpenTrue; // 길드 메뉴 - 길드 공개
+    public ItemStack GuildOpenFalse; // 길드 메뉴 - 길드 비공개
+
     public void LoadItem(){
         GuildTicket = new ItemStack(Material.PAPER);
         ItemMeta GuildTicketMeta = GuildTicket.getItemMeta();
@@ -85,8 +88,23 @@ public final class GuildSystem extends JavaPlugin {
 
         GuildUserManager = new ItemStack(Material.PLAYER_HEAD);
         ItemMeta GuildUserManagerMeta = GuildUserManager.getItemMeta();
-        GuildUserManagerMeta.setDisplayName(ChatColor.YELLOW + "길드 인원 관리");
+        GuildUserManagerMeta.setDisplayName(ChatColor.GREEN + "길드 인원 관리");
         GuildUserManager.setItemMeta(GuildUserManagerMeta);
+
+        GuildUserList = new ItemStack(Material.PLAYER_HEAD);
+        ItemMeta GuildUserListMeta = GuildUserList.getItemMeta();
+        GuildUserListMeta.setDisplayName(ChatColor.GREEN + "길드 인원 보기");
+        GuildUserList.setItemMeta(GuildUserListMeta);
+
+        GuildUserKick = new ItemStack(Material.RED_CONCRETE);
+        ItemMeta GuildUserKickMeta = GuildUserKick.getItemMeta();
+        GuildUserKickMeta.setDisplayName(ChatColor.GREEN + "길드 인원 추방");
+        GuildUserKick.setItemMeta(GuildUserKickMeta);
+
+        GuildUserInvite = new ItemStack(Material.GREEN_CONCRETE);
+        ItemMeta GuildUserInviteMeta = GuildUserInvite.getItemMeta();
+        GuildUserInviteMeta.setDisplayName(ChatColor.GREEN + "길드 가입 신청함");
+        GuildUserInvite.setItemMeta(GuildUserInviteMeta);
 
         GuildSkill = new ItemStack(Material.NETHERITE_SWORD);
         ItemMeta GuildSkillMeta = GuildSkill.getItemMeta();
@@ -94,10 +112,17 @@ public final class GuildSystem extends JavaPlugin {
         GuildSkillMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
         GuildSkill.setItemMeta(GuildSkillMeta);
 
-        GuildSetting = new ItemStack(Material.ANVIL);
-        ItemMeta GuildSettingMeta = GuildSetting.getItemMeta();
-        GuildSettingMeta.setDisplayName(ChatColor.GREEN + "길드 설정");
-        GuildSetting.setItemMeta(GuildSettingMeta);
+        GuildOpenTrue= new ItemStack(Material.ANVIL);
+        ItemMeta GuildSettingMeta = GuildOpenTrue.getItemMeta();
+        GuildSettingMeta.setDisplayName(ChatColor.GREEN + "길드 찾기 노출 허용");
+        GuildSettingMeta.setLore(Arrays.asList(ChatColor.DARK_GRAY + "좌클릭으로 길드 찾기 노출 여부를 설정 가능합니다."));
+        GuildOpenTrue.setItemMeta(GuildSettingMeta);
+
+        GuildOpenFalse = new ItemStack(Material.ANVIL);
+        ItemMeta GuildOpenFalseMeta = GuildOpenFalse.getItemMeta();
+        GuildOpenFalseMeta.setDisplayName(ChatColor.RED + "길드 찾기 노출 거부 ");
+        GuildOpenFalseMeta.setLore(Arrays.asList(ChatColor.DARK_GRAY + "좌클릭으로 길드 찾기 노출 여부를 설정 가능합니다."));
+        GuildOpenFalse.setItemMeta(GuildOpenFalseMeta);
     }
 
     public void putPlayerGuildMap(UUID uuid, String guild){
