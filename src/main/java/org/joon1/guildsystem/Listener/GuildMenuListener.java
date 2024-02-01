@@ -16,6 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.checkerframework.checker.units.qual.A;
 import org.joon1.guildsystem.GuildSystem;
 import org.joon1.guildsystem.Prefix;
 import org.joon1.guildsystem.commands.GuildMenuCommand;
@@ -24,6 +25,7 @@ import org.joon1.guildsystem.hook.VaultHook;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.UUID;
@@ -171,21 +173,33 @@ public class GuildMenuListener implements Listener {
                 case 15: // 길드 인원 초대
                     Inventory inviteInv = Bukkit.createInventory(player, 54, ChatColor.DARK_GRAY + "길드 가입 신청함");
                     int invCount = 0;
-                    File invFile = new File(guildSystem.getDataFolder(), "PlayerList");
-                    for(File f : invFile.listFiles()){
-                        YamlConfiguration fyc = YamlConfiguration.loadConfiguration(f);
-                        Player inviteP = Bukkit.getPlayer(UUID.fromString(fyc.getString("UUID")));
-                        if(fyc.getString("Guild") == null){
+                    String name = guildSystem.playerGuildMap.get(player.getUniqueId());
+                    File inviteFile = new File(guildSystem.getDataFolder(), "GuildList/" + name + "yml");
+                    YamlConfiguration fyc = YamlConfiguration.loadConfiguration(inviteFile);
+                    ArrayList<String> playerList = new ArrayList<>();
+                    if(fyc.getList("Apply Players") != null) {
+                        for (Object s : fyc.getList("Apply Players")) {
+                            Player p = Bukkit.getPlayer(UUID.fromString(s.toString()));
                             ItemStack inviteHead = new ItemStack(Material.PLAYER_HEAD);
                             SkullMeta inviteHeadMeta = (SkullMeta) inviteHead.getItemMeta();
-                            inviteHeadMeta.setOwningPlayer(inviteP);
-                            inviteHeadMeta.setDisplayName(ChatColor.GREEN + inviteP.getName());
-                            inviteHeadMeta.setLore(Arrays.asList(ChatColor.GRAY + "좌클릭으로 초대하기"));
+                            inviteHeadMeta.setOwningPlayer(p);
                             inviteHead.setItemMeta(inviteHeadMeta);
                             inviteInv.setItem(invCount, inviteHead);
                             invCount++;
                         }
+                    }else{
+                        player.sendMessage("ddd test");
                     }
+//                    for(File f : inviteFile.listFiles()){
+//                        Player inviteP = Bukkit.getPlayer(UUID.fromString(fyc.getString("UUID")));
+//                        if(fyc.getString("Guild") == null){
+//
+//                            inviteHeadMeta.setDisplayName(ChatColor.GREEN + inviteP.getName());
+//                            inviteHeadMeta.setLore(Arrays.asList(ChatColor.GRAY + "좌클릭으로 초대하기"));
+//
+//
+//                        }
+//                    }
                     player.openInventory(inviteInv);
                     break;
             }
@@ -196,7 +210,6 @@ public class GuildMenuListener implements Listener {
         }else if(ChatColor.translateAlternateColorCodes('&',e.getView().getTitle()).equals(ChatColor.DARK_GRAY + "길드 가입 신청함")){
             e.setCancelled(true);
             Player player = (Player) e.getWhoClicked();
-
         }else if(ChatColor.translateAlternateColorCodes('&',e.getView().getTitle()).equals(ChatColor.DARK_GRAY + "길드 찾기")){
             e.setCancelled(true);
             if(e.getCurrentItem() != null){
@@ -212,16 +225,17 @@ public class GuildMenuListener implements Listener {
                 }
                 File guild = new File(guildSystem.getDataFolder(), "GuildList/" + GuildName + ".yml");
                 YamlConfiguration guildyc = YamlConfiguration.loadConfiguration(guild);
-                ConfigurationSection section = guildyc.getConfigurationSection("Apply Players");
-                HashSet<String> set = new HashSet<>();
-                if(section == null){
-                    set.add(player.getUniqueId().toString());
-                }else{
-                    for(String s : set){
-                        set.add(s);
+                ArrayList<String> playerList = new ArrayList<>();
+                if(guildyc.getList("Apply Players") != null){
+                    for(Object s : guildyc.getList("Apply Players")){
+                        playerList.add(s.toString());
                     }
+                    player.sendMessage("1234");
+                }else{
+                    playerList.add(player.getUniqueId().toString());
+                    player.sendMessage("7777");
                 }
-                guildyc.set("Apply Players", set);
+                guildyc.set("Apply Players", playerList);
                 try{
                     guildyc.save(guild);
                 }catch (IOException ex){
