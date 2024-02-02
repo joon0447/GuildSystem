@@ -92,6 +92,8 @@ public class GuildMenuListener implements Listener {
                     File file = new File(guildSystem.getDataFolder(), "GuildList/" + guildSystem.playerGuildMap.get(player.getUniqueId()) + ".yml");
                     YamlConfiguration yc = YamlConfiguration.loadConfiguration(file);
                     Boolean find = yc.getBoolean("FindGuild");
+                    if(find) player.sendMessage("길드 찾기 창에서의 노출을 비활성화합니다.");
+                    else player.sendMessage("길드 찾기 창에서의 노출을 활성화합니다.");
                     yc.set("FindGuild", !find);
                     try{
                         yc.save(file);
@@ -173,22 +175,22 @@ public class GuildMenuListener implements Listener {
                 case 15: // 길드 인원 초대
                     Inventory inviteInv = Bukkit.createInventory(player, 54, ChatColor.DARK_GRAY + "길드 가입 신청함");
                     int invCount = 0;
-                    String name = guildSystem.playerGuildMap.get(player.getUniqueId());
-                    File inviteFile = new File(guildSystem.getDataFolder(), "GuildList/" + name + "yml");
+                    File inviteFile = new File(guildSystem.getDataFolder(), "GuildList/" + guildSystem.playerGuildMap.get(player.getUniqueId()) + ".yml");
                     YamlConfiguration fyc = YamlConfiguration.loadConfiguration(inviteFile);
-                    ArrayList<String> playerList = new ArrayList<>();
                     if(fyc.getList("Apply Players") != null) {
                         for (Object s : fyc.getList("Apply Players")) {
                             Player p = Bukkit.getPlayer(UUID.fromString(s.toString()));
                             ItemStack inviteHead = new ItemStack(Material.PLAYER_HEAD);
                             SkullMeta inviteHeadMeta = (SkullMeta) inviteHead.getItemMeta();
                             inviteHeadMeta.setOwningPlayer(p);
+                            inviteHeadMeta.setDisplayName(p.getName());
+                            inviteHeadMeta.setLore(Arrays.asList(ChatColor.GRAY + "좌클릭으로 수락하기"));
                             inviteHead.setItemMeta(inviteHeadMeta);
                             inviteInv.setItem(invCount, inviteHead);
                             invCount++;
                         }
                     }else{
-                        player.sendMessage("ddd test");
+
                     }
 //                    for(File f : inviteFile.listFiles()){
 //                        Player inviteP = Bukkit.getPlayer(UUID.fromString(fyc.getString("UUID")));
@@ -223,6 +225,7 @@ public class GuildMenuListener implements Listener {
                 }catch (IOException ex){
                     throw new RuntimeException(ex);
                 }
+
                 File guild = new File(guildSystem.getDataFolder(), "GuildList/" + GuildName + ".yml");
                 YamlConfiguration guildyc = YamlConfiguration.loadConfiguration(guild);
                 ArrayList<String> playerList = new ArrayList<>();
@@ -230,6 +233,7 @@ public class GuildMenuListener implements Listener {
                     for(Object s : guildyc.getList("Apply Players")){
                         playerList.add(s.toString());
                     }
+                    playerList.add(player.getUniqueId().toString());
                     player.sendMessage("1234");
                 }else{
                     playerList.add(player.getUniqueId().toString());

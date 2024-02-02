@@ -1,13 +1,20 @@
 package org.joon1.guildsystem.commands;
 
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.joon1.guildsystem.GuildSystem;
 import org.joon1.guildsystem.hook.VaultHook;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class TestCommand implements CommandExecutor {
@@ -28,6 +35,7 @@ public class TestCommand implements CommandExecutor {
                 player.sendMessage(u.toString());
                 player.sendMessage(guildSystem.playerGuildMap.get(u));
             }
+
         }
         return false;
     }
