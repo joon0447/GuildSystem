@@ -22,6 +22,7 @@ import org.joon1.guildsystem.Prefix;
 import org.joon1.guildsystem.commands.GuildMenuCommand;
 import org.joon1.guildsystem.hook.VaultHook;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -184,7 +185,7 @@ public class GuildMenuListener implements Listener {
                             SkullMeta inviteHeadMeta = (SkullMeta) inviteHead.getItemMeta();
                             inviteHeadMeta.setOwningPlayer(p);
                             inviteHeadMeta.setDisplayName(p.getName());
-                            inviteHeadMeta.setLore(Arrays.asList(ChatColor.GRAY + "좌클릭으로 수락하기"));
+                            inviteHeadMeta.setLore(Arrays.asList(ChatColor.GREEN + "좌클릭으로 수락하기", ChatColor.RED +"우클릭으로 거절하기"));
                             inviteHead.setItemMeta(inviteHeadMeta);
                             inviteInv.setItem(invCount, inviteHead);
                             invCount++;
@@ -192,16 +193,6 @@ public class GuildMenuListener implements Listener {
                     }else{
 
                     }
-//                    for(File f : inviteFile.listFiles()){
-//                        Player inviteP = Bukkit.getPlayer(UUID.fromString(fyc.getString("UUID")));
-//                        if(fyc.getString("Guild") == null){
-//
-//                            inviteHeadMeta.setDisplayName(ChatColor.GREEN + inviteP.getName());
-//                            inviteHeadMeta.setLore(Arrays.asList(ChatColor.GRAY + "좌클릭으로 초대하기"));
-//
-//
-//                        }
-//                    }
                     player.openInventory(inviteInv);
                     break;
             }
@@ -212,6 +203,28 @@ public class GuildMenuListener implements Listener {
         }else if(ChatColor.translateAlternateColorCodes('&',e.getView().getTitle()).equals(ChatColor.DARK_GRAY + "길드 가입 신청함")){
             e.setCancelled(true);
             Player player = (Player) e.getWhoClicked();
+            ItemStack stack = e.getCurrentItem();
+            if(stack != null){
+                if(e.getClick().isLeftClick()){
+                    player.sendMessage(stack.getItemMeta().getDisplayName());
+                }else if(e.getClick().isRightClick()){
+                    Player invite = Bukkit.getPlayer(stack.getItemMeta().getDisplayName());
+                    File pFile = new File(guildSystem.getDataFolder(), "GuildList/" + player.getUniqueId() + ".yml");
+                    YamlConfiguration pYml = YamlConfiguration.loadConfiguration(pFile);
+                    String guild = pYml.getString("Guild");
+                    File gFile = new File(guildSystem.getDataFolder(), "GuildList/" + guild +".yml");
+                    YamlConfiguration gYml = YamlConfiguration.loadConfiguration(gFile);
+
+                    File invitePlayer = new File(guildSystem.getDataFolder(), "GuildList/" + invite.getUniqueId() + ".yml;");
+                    if(!invitePlayer.exists()){
+                        YamlConfiguration inYml = YamlConfiguration.loadConfiguration(invitePlayer);
+                        inYml.set("Guild", guild);
+                        inYml.set("")
+                    }
+
+                    player.sendMessage("우클릭");
+                }
+            }
         }else if(ChatColor.translateAlternateColorCodes('&',e.getView().getTitle()).equals(ChatColor.DARK_GRAY + "길드 찾기")){
             e.setCancelled(true);
             if(e.getCurrentItem() != null){

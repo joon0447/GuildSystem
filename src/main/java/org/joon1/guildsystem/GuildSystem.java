@@ -25,6 +25,7 @@ import java.util.UUID;
 
 public final class GuildSystem extends JavaPlugin {
     private VaultHook vaultHook = new VaultHook();
+    private GuildPrefix guildPrefix = new GuildPrefix();
     private DataManager dataManager = new DataManager();
     public File dataFolder = this.getDataFolder();
     public static HashMap<UUID, String> playerGuildMap = new HashMap<>();
@@ -37,7 +38,7 @@ public final class GuildSystem extends JavaPlugin {
         dataManager.loadFile(this);
 
         LoadItem();
-
+        guildPrefix.addPrefix(this);
         getCommand("bal").setExecutor(new BalanceCommand());
         getCommand("test").setExecutor(new TestCommand(this));
         getCommand("길드").setExecutor(new GuildMenuCommand(this));
